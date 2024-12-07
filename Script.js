@@ -1,11 +1,14 @@
-//Funcion encargada de lanzar el dado
 function tirarDado() {
     return Math.floor(Math.random() * 6) + 1;
 }
 
-function jugar(numeroJugadores) {
+function iniciarJuego() {
+    const numJugadores = document.getElementById('num-jugadores').value;
+    const resultadosDiv = document.getElementById('resultados');
+    resultadosDiv.innerHTML = '';
+
     let jugadores = [];
-    for (let i = 0; i < numeroJugadores; i++) {
+    for (let i = 0; i < numJugadores; i++) {
         jugadores.push({
             nombre: prompt(`Ingrese el nombre del jugador ${i + 1}:`),
             puntaje: 0
@@ -14,10 +17,15 @@ function jugar(numeroJugadores) {
 
     // Ronda de juego
     for (let ronda = 1; ronda <= 3; ronda++) {
-        console.log(`\nRonda ${ronda}`);
+        const rondaDiv = document.createElement('div');
+        rondaDiv.textContent = `Ronda ${ronda}`;
+        resultadosDiv.appendChild(rondaDiv);
+
         for (let jugador of jugadores) {
             let resultado = tirarDado();
-            console.log(`${jugador.nombre} sacó un ${resultado}`);
+            const resultadoDiv = document.createElement('div');
+            resultadoDiv.textContent = `${jugador.nombre} sacó un ${resultado}`;
+            resultadosDiv.appendChild(resultadoDiv);
             jugador.puntaje += resultado;
         }
     }
@@ -27,18 +35,10 @@ function jugar(numeroJugadores) {
         return jugadorActual.puntaje > mejorJugador.puntaje ? jugadorActual : mejorJugador;
     });
 
-    console.log("\nResultados finales:");
-    jugadores.forEach(jugador => {
-        console.log(`${jugador.nombre}: ${jugador.puntaje} puntos`);
-    });
-    console.log(`¡El ganador es ${ganador.nombre} con ${ganador.puntaje} puntos!`);
-}
+    const ganadorDiv = document.createElement('div');
+    ganadorDiv.textContent = `¡El ganador es ${ganador.nombre} con ${ganador.puntaje} puntos!`;
+    resultadosDiv.appendChild(ganadorDiv);
 
-// Solicitar el número de jugadores
-let numeroJugadores = parseInt(prompt("¿Cuántos jugadores son?"));
-while (numeroJugadores <= 0) {
-    numeroJugadores = parseInt(prompt("Ingrese un número de jugadores válido:"));
+    // Almacenar los jugadores en localStorage
+    localStorage.setItem('jugadores', JSON.stringify(jugadores));
 }
-
-// Iniciar el juego
-jugar(numeroJugadores);
